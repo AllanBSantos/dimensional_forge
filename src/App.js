@@ -4,9 +4,9 @@ import './App.css';
 
 function App() {
   const [totalCost, setTotalCost] = useState('');
-  const [platformCommission, setPlatformCommission] = useState('');
+  const [platformCommission, setPlatformCommission] = useState('10');
   const [cashFlowReserve, setCashFlowReserve] = useState('');
-  const [shippingCost, setShippingCost] = useState('');
+  const [shippingCost, setShippingCost] = useState('6');
   const [netProfit, setNetProfit] = useState('');
   const [profitMargin, setProfitMargin] = useState('');
   const [salePrice, setSalePrice] = useState('');
