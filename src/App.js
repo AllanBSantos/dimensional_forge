@@ -1,23 +1,101 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import logo from './logo.png';
 import './App.css';
 
 function App() {
+  const [totalCost, setTotalCost] = useState('');
+  const [platformCommission, setPlatformCommission] = useState('');
+  const [cashFlowReserve, setCashFlowReserve] = useState('');
+  const [shippingCost, setShippingCost] = useState('');
+  const [netProfit, setNetProfit] = useState('');
+  const [profitMargin, setProfitMargin] = useState('');
+  const [salePrice, setSalePrice] = useState('');
+
+  const calculateValues = () => {
+    const cost = parseFloat(totalCost) || 0;
+    const commission = parseFloat(platformCommission) / 100 || 0;
+    const reserve = parseFloat(cashFlowReserve) / 100 || 0;
+    const shipping = parseFloat(shippingCost) / 100 || 0;
+
+    if (salePrice) {
+      const sale = parseFloat(salePrice);
+      const calculatedNetProfit = sale - cost - (sale * commission) - (sale * reserve) - (sale * shipping);
+      const calculatedProfitMargin = (calculatedNetProfit / sale) * 100;
+
+      setNetProfit(calculatedNetProfit.toFixed(2));
+      setProfitMargin(calculatedProfitMargin.toFixed(2));
+    } else if (profitMargin) {
+      const margin = parseFloat(profitMargin) / 100;
+      const calculatedSalePrice = cost / (1 - commission - reserve - shipping - margin);
+      const calculatedNetProfit = calculatedSalePrice * margin;
+
+      setSalePrice(calculatedSalePrice.toFixed(2));
+      setNetProfit(calculatedNetProfit.toFixed(2));
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <img src={logo} className="App-logo" alt="logo" />
+      <form onSubmit={(e) => { e.preventDefault(); calculateValues(); }}>
+        <label>
+          Custo Total (R$)
+          <input
+            type="number"
+            value={totalCost}
+            onChange={(e) => setTotalCost(e.target.value)}
+          />
+        </label>
+        <label>
+          Comissão Plataforma (%)
+          <input
+            type="number"
+            value={platformCommission}
+            onChange={(e) => setPlatformCommission(e.target.value)}
+          />
+        </label>
+        <label>
+          Reserva Fluxo de Caixa (%)
+          <input
+            type="number"
+            value={cashFlowReserve}
+            onChange={(e) => setCashFlowReserve(e.target.value)}
+          />
+        </label>
+        <label>
+          Custo Frete (%)
+          <input
+            type="number"
+            value={shippingCost}
+            onChange={(e) => setShippingCost(e.target.value)}
+          />
+        </label>
+        <label>
+          Lucro Líquido (R$)
+          <input
+            type="number"
+            value={netProfit}
+            readOnly
+          />
+        </label>
+        <label>
+          Margem de Lucro (%)
+          <input
+            type="number"
+            value={profitMargin}
+            onChange={(e) => setProfitMargin(e.target.value)}
+          />
+        </label>
+        <label>
+          Valor de Venda (R$)
+          <input
+            type="number"
+            value={salePrice}
+            onChange={(e) => setSalePrice(e.target.value)}
+          />
+        </label>
+        <button type="submit">Calcular</button>
+      </form>
     </div>
   );
 }
