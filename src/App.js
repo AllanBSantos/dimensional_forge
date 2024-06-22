@@ -7,6 +7,7 @@ function App() {
   const [platformCommission, setPlatformCommission] = useState('10');
   const [cashFlowReserve, setCashFlowReserve] = useState('');
   const [shippingCost, setShippingCost] = useState('6');
+  const [saleTax, setSaleTax] = useState('4');
   const [netProfit, setNetProfit] = useState('');
   const [profitMargin, setProfitMargin] = useState('');
   const [salePrice, setSalePrice] = useState('');
@@ -16,17 +17,18 @@ function App() {
     const commission = parseFloat(platformCommission) / 100 || 0;
     const reserve = parseFloat(cashFlowReserve) / 100 || 0;
     const shipping = parseFloat(shippingCost) / 100 || 0;
+    const tax = parseFloat(saleTax) || 0;
 
     if (salePrice) {
       const sale = parseFloat(salePrice);
-      const calculatedNetProfit = sale - cost - (sale * commission) - (sale * reserve) - (sale * shipping);
+      const calculatedNetProfit = sale - cost - (sale * commission) - (sale * reserve) - (sale * shipping) - tax;
       const calculatedProfitMargin = (calculatedNetProfit / sale) * 100;
 
       setNetProfit(calculatedNetProfit.toFixed(2));
       setProfitMargin(calculatedProfitMargin.toFixed(2));
     } else if (profitMargin) {
       const margin = parseFloat(profitMargin) / 100;
-      const calculatedSalePrice = cost / (1 - commission - reserve - shipping - margin);
+      const calculatedSalePrice = (cost + tax) / (1 - commission - reserve - shipping - margin);
       const calculatedNetProfit = calculatedSalePrice * margin;
 
       setSalePrice(calculatedSalePrice.toFixed(2));
@@ -38,7 +40,11 @@ function App() {
     <div className="App">
       <img src={logo} className="App-logo" alt="logo" />
       <form onSubmit={(e) => { e.preventDefault(); calculateValues(); }}>
-        <label>
+        <div className='ColumForm'>
+
+        
+      <div className='RowForm'>
+      <label>
           Custo Total (R$)
           <input
             type="number"
@@ -70,6 +76,16 @@ function App() {
             onChange={(e) => setShippingCost(e.target.value)}
           />
         </label>
+      </div>
+      <div className='RowForm'>
+      <label>
+          Taxa de venda (R$)
+          <input
+            type="number"
+            value={saleTax}
+            onChange={(e) => setSaleTax(e.target.value)}
+          />
+        </label>
         <label>
           Lucro Líquido (R$)
           <input
@@ -94,7 +110,14 @@ function App() {
             onChange={(e) => setSalePrice(e.target.value)}
           />
         </label>
-        <button type="submit">Calcular</button>
+
+      </div>
+      <button type="submit">Calcular</button>
+
+      </div>
+
+        
+       
       </form>
     </div>
   );
